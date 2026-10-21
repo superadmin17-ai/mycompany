@@ -1,0 +1,782 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="17 AI is the creative intelligence lab of Interesting Times. It works. That’s the problem. Time for a reset.">
+<meta property="og:title" content="17 AI · Sabotaging the way we work">
+<meta property="og:description" content="The creative intelligence lab of Interesting Times. Time for a reset.">
+<meta name="theme-color" content="#08090B">
+<title>17 AI · Sabotaging the way we work</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="canonical" href="https://17ai.io/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="17 AI">
+<meta property="og:url" content="https://17ai.io/">
+<meta property="og:image" content="https://17ai.io/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preload" href="assets/img/still-0.jpg" as="image">
+<link rel="preload" href="assets/video/leg1.mp4" as="fetch" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Strictly black and white UI. All colour comes from the footage. */
+:root{
+  color-scheme: dark;
+  --ink:#08090B; --paper:#F2F1ED;
+  --fg:var(--paper); --bg:var(--ink);
+  --fg-2:color-mix(in oklab,var(--fg) 68%,transparent);
+  --fg-3:color-mix(in oklab,var(--fg) 40%,transparent);
+  --rule:color-mix(in oklab,var(--fg) 18%,transparent);
+  --panel:rgba(10,11,16,.86);
+  --sans:"Helvetica Neue",Helvetica,"Archivo","Nimbus Sans",Arial,sans-serif;
+  --serif:"Instrument Serif","Iowan Old Style",Georgia,serif;
+  --mono:"JetBrains Mono",ui-monospace,"SF Mono",Menlo,monospace;
+  --ease:cubic-bezier(.16,1,.3,1);
+  --gut:clamp(16px,3.4vw,56px);
+}
+html{background:var(--ink)}
+body{margin:0;background:var(--ink);color:var(--paper);font-family:var(--sans);-webkit-font-smoothing:antialiased;font-size:16px;line-height:1.5}
+*{box-sizing:border-box}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--fg);outline-offset:3px}
+.skip{position:fixed;left:12px;top:-60px;z-index:60;background:var(--paper);color:var(--ink);padding:10px 14px;font-size:14px}
+.skip:focus{top:12px}
+.mono{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-variant-numeric:tabular-nums}
+.it,em{font-family:var(--serif);font-style:italic;font-weight:400;letter-spacing:-.005em}
+h1,h2,h3{margin:0;font-weight:500;letter-spacing:-.035em;text-wrap:balance}
+p{text-wrap:pretty}
+
+/* ---------- STAGE ---------- */
+.world{position:relative}
+.stage{position:sticky;top:0;height:100vh;height:100dvh;overflow:hidden;background:#050507}
+.cover{position:absolute;left:50%;top:50%;width:max(100vw,177.78vh);height:max(100vh,56.25vw);transform:translate(-50%,-50%)}
+.cover img,.cover video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.cover video{opacity:0}
+.scrim{position:absolute;inset:0;pointer-events:none}
+.grain{position:absolute;inset:-50%;pointer-events:none;opacity:.2;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  animation:grain 1.2s steps(6) infinite}
+@keyframes grain{0%{transform:translate(0,0)}20%{transform:translate(-4%,3%)}40%{transform:translate(3%,-2%)}60%{transform:translate(-2%,-4%)}80%{transform:translate(4%,2%)}100%{transform:translate(0,0)}}
+.chrome,.copy{color:var(--fg);transition:color .5s var(--ease)}
+.stage{--fg-2:color-mix(in oklab,var(--fg) 68%,transparent);--fg-3:color-mix(in oklab,var(--fg) 40%,transparent);--rule:color-mix(in oklab,var(--fg) 18%,transparent)}
+.stage[data-tone="light"]{--fg:var(--ink);--panel:rgba(241,238,230,.74)}
+.stage[data-tone="light"] .pill.solid{color:var(--paper)}
+.stage[data-tone="light"] .pill:hover{color:var(--paper)}
+.cover img.pb{opacity:0}
+
+/* ---------- INTRO ---------- */
+.intro{position:fixed;inset:0;z-index:50;background:var(--ink);color:var(--paper);display:grid;place-items:center;transition:opacity .9s var(--ease),visibility 0s linear .9s}
+.intro.done{opacity:0;visibility:hidden}
+.intro .in{display:flex;flex-direction:column;align-items:center;gap:26px}
+.intro svg{width:64px;height:auto;fill:currentColor;clip-path:inset(0 0 calc(100% - var(--p,0) * 100%) 0);transition:clip-path .4s var(--ease)}
+.intro .ct{color:color-mix(in oklab,var(--paper) 55%,transparent);min-width:22ch;text-align:center}
+.intro .ln{position:relative;width:180px;height:1px;background:color-mix(in oklab,var(--paper) 16%,transparent)}
+.intro .ln i{position:absolute;inset:0 auto 0 0;width:calc(var(--p,0) * 100%);background:var(--paper);transition:width .4s var(--ease)}
+
+/* ---------- CHROME ---------- */
+.chrome{position:absolute;inset:0;pointer-events:none;z-index:5}
+.bar{position:absolute;left:0;right:0;top:0;display:flex;align-items:center;justify-content:space-between;padding:calc(env(safe-area-inset-top,0px) + 22px) var(--gut) 0}
+.bar a,.bar button{pointer-events:auto}
+.mark{display:flex;align-items:center;gap:12px;text-decoration:none;font-weight:500;letter-spacing:-.01em;font-size:15px}
+.mark svg{width:30px;height:auto;fill:currentColor;display:block}
+.pill{display:inline-flex;align-items:center;gap:10px;height:44px;padding:0 20px;border-radius:999px;border:1px solid currentColor;background:transparent;color:inherit;font:500 14px/1 var(--sans);letter-spacing:-.01em;text-decoration:none;cursor:pointer;white-space:nowrap;transition:background .3s var(--ease),color .3s var(--ease),border-color .3s var(--ease)}
+.pill:hover{background:var(--fg);color:var(--bg)}
+.pill.solid{background:var(--fg);color:var(--ink);border-color:var(--fg)}
+.pill.solid:hover{background:transparent;color:var(--fg)}
+.tl{display:inline-flex;align-items:center;gap:8px;font-weight:500;font-size:15px;letter-spacing:-.01em;text-decoration:none;border-bottom:1px solid var(--rule);padding-bottom:4px;transition:border-color .3s var(--ease);background:none;border-top:0;border-left:0;border-right:0;color:inherit;cursor:pointer;font-family:inherit}
+.tl:hover{border-bottom-color:currentColor}
+
+.hud{position:absolute;left:var(--gut);right:var(--gut);bottom:calc(env(safe-area-inset-bottom,0px) + 10px);display:flex;justify-content:space-between;align-items:center;gap:24px;pointer-events:auto}
+.meter{position:absolute;left:0;right:0;bottom:0;height:1px;background:var(--rule)}
+.meter i{position:absolute;left:0;top:0;bottom:0;background:var(--fg);width:0}
+.rail{display:flex;align-items:center;gap:2px}
+.rail button{all:unset;cursor:pointer;display:flex;align-items:center;gap:10px;height:44px;padding:0 4px;color:var(--fg-3);transition:color .3s var(--ease)}
+.rail button span{display:none}
+.rail button i{width:14px;height:1px;background:currentColor;transition:width .4s var(--ease)}
+.rail button[aria-current="true"]{color:var(--fg)}
+.rail button[aria-current="true"] i{width:34px}
+.rail button[aria-current="true"] span{display:inline;animation:railIn .4s var(--ease)}
+@keyframes railIn{from{opacity:0;transform:translateY(4px)}}
+.rail button:focus-visible{outline:1px solid currentColor;outline-offset:4px}
+
+/* ---------- COPY / BEATS ---------- */
+.copy{position:absolute;inset:0;z-index:4;pointer-events:none}
+.beat{position:absolute;inset:0;opacity:0;visibility:hidden}
+.beat.on{visibility:visible}
+.beat a,.beat button{pointer-events:auto}
+/* masked line rise, staggered by --d */
+.rise{display:block;overflow:hidden;padding-bottom:.06em;margin-bottom:-.06em}
+.rise>span{display:block;transform:translateY(calc((1 - clamp(0, var(--in,1) * 1.6 - var(--d,0) * .14, 1)) * 108%));will-change:transform}
+/* body copy drifts in after the headline */
+.fade{--k:clamp(0, calc(var(--in,1) * 1.9 - .55 - var(--d,0) * .12), 1);opacity:var(--k);transform:translateY(calc((1 - var(--k)) * 22px))}
+.panel{background:var(--panel);padding:clamp(20px,2.2vw,32px)}
+.panel p{margin:0 0 .9em;color:var(--fg-2);font-size:15px;line-height:1.55}
+.panel p:last-child{margin-bottom:0}
+.panel .lg{color:var(--fg);font-size:clamp(18px,1.55vw,22px);letter-spacing:-.015em;line-height:1.35;font-weight:500}
+.panel .end{color:var(--fg);border-top:1px solid var(--rule);padding-top:.9em}
+.eyebrow{color:var(--fg-2);margin:0}
+
+/* 00 hero */
+.b-hero .kicker{position:absolute;left:0;right:0;top:calc(env(safe-area-inset-top,0px) + 96px);text-align:center;padding:0 var(--gut)}
+.b-hero .split{position:absolute;left:var(--gut);right:var(--gut);top:46%;transform:translateY(-50%);display:grid;grid-template-columns:1fr minmax(0,30vw) 1fr;align-items:center}
+.b-hero h1{font-size:clamp(44px,6.2vw,112px);line-height:.92;text-align:right;white-space:nowrap}
+.b-hero .right{font-size:clamp(44px,5.8vw,104px);line-height:.92;white-space:nowrap}
+.b-hero .cfoot{position:absolute;left:0;right:0;bottom:calc(env(safe-area-inset-bottom,0px) + 30px);display:flex;flex-direction:column;align-items:center;gap:20px;text-align:center;padding:0 var(--gut)}
+.b-hero .sub{margin:0;max-width:50ch;font-family:var(--serif);font-style:italic;font-size:clamp(22px,2vw,30px);letter-spacing:-.005em}
+.ctas{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+
+/* shared beat frame */
+.bf{padding:calc(env(safe-area-inset-top,0px) + 100px) var(--gut) calc(env(safe-area-inset-bottom,0px) + 84px)}
+.sec h2{font-size:clamp(38px,4.8vw,84px);line-height:.96}
+.lg{color:var(--fg);font-size:clamp(18px,1.55vw,22px);letter-spacing:-.015em;line-height:1.35;font-weight:500;margin:0}
+.body p{margin:0;color:var(--fg-2);font-size:15px;line-height:1.55}
+.body p+p{margin-top:.8em}
+.body .lg,.b-lab .half .lg{color:var(--fg);font-size:clamp(18px,1.55vw,22px);line-height:1.35}
+
+/* 01 problem: all type on the empty left half, tower on the right */
+.b-prob{display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center}
+.b-prob .col{max-width:min(64vw,820px);align-items:center;display:flex;flex-direction:column;gap:26px}
+.b-prob h2{font-size:clamp(42px,5vw,88px);line-height:.94}
+.b-prob .eyebrow .aside{color:var(--fg-3)}
+
+/* 02 belief: bright scene, headline crowns the frame, copy runs along a base band */
+.b-belief .head{position:absolute;left:var(--gut);right:var(--gut);top:calc(env(safe-area-inset-top,0px) + 92px);text-align:center;display:flex;flex-direction:column;align-items:center;gap:14px}
+.b-belief h2{font-size:clamp(34px,4vw,66px);line-height:.98}
+.b-belief .band{position:absolute;left:var(--gut);right:var(--gut);bottom:calc(env(safe-area-inset-bottom,0px) + 70px);display:grid;grid-template-columns:1fr 1fr 1fr;gap:clamp(18px,2.2vw,36px);align-items:start}
+.b-belief .band p{margin:0;font-size:14px;line-height:1.5;color:var(--fg-2)}
+.b-belief .band .lg{font-size:clamp(18px,1.5vw,22px);color:var(--fg)}
+.b-belief .band .tl{margin-top:14px}
+
+/* 03 future: captions sit on the plinth face under each object */
+.b-future .head{position:absolute;left:var(--gut);right:var(--gut);text-align:center;top:calc(env(safe-area-inset-top,0px) + 100px)}
+.b-future .head .eyebrow{margin-bottom:16px}
+.b-future .cover{pointer-events:none}
+.cap{position:absolute;top:73%;width:min(19%,300px);translate:-50% 0;text-align:center}
+.cap .mono{display:block;margin-bottom:12px;color:var(--fg-2)}
+.cap h3{margin-bottom:2px}
+.cap h3{font-size:clamp(17px,1.4vw,22px);line-height:1.15;letter-spacing:-.02em}
+.cap p{margin:10px 0 0;color:color-mix(in oklab,var(--fg) 78%,transparent);font-size:14px;line-height:1.5}
+.cap:nth-child(1){left:26%}.cap:nth-child(2){left:50%}.cap:nth-child(3){left:74%}
+.b-future .stack{display:none}
+
+/* 04 lab: title and shared lede up top; each world gets its own card, its label inside it */
+
+/* 01a statement: one thought, the whole frame */
+.b-say{display:flex;align-items:center;justify-content:center;padding:0 var(--gut);text-align:center}
+.b-say .rise.it{font-weight:400;letter-spacing:-.01em}
+.b-say .rise:first-child{margin-bottom:.18em}
+
+/* 05 steps: headline top-left, two separate product cards flank the tower along the base */
+.b-steps{display:flex;flex-direction:column;justify-content:space-between}
+.b-steps .l{display:flex;flex-direction:column;gap:18px;align-items:center;text-align:center}
+.b-steps h2{white-space:nowrap}
+.b-steps .intro-p{margin:0;color:var(--fg-2);font-size:16px;max-width:38ch}
+.path{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.9fr) minmax(0,1fr);align-items:end}
+.path article{display:flex;flex-direction:column;gap:10px;border-top:1px solid var(--fg);max-width:420px}
+.path article:last-child{justify-self:end}
+.path h3{font-size:clamp(26px,2.4vw,38px);letter-spacing:-.03em;line-height:1}
+.path p{margin:0;color:var(--fg-2);font-size:14px;line-height:1.5}
+.path .tl{align-self:flex-start;margin-top:4px}
+.path article>.mono{color:var(--fg-2)}
+.link{display:flex;flex-direction:column;align-items:center;gap:10px;color:var(--fg-2);padding-bottom:40px;text-align:center}
+.link b{font-family:var(--sans);font-weight:300;font-size:26px;letter-spacing:0;color:var(--fg);line-height:1}
+.link .dn{display:none}
+
+
+/* problem: usual way vs lab way */
+.b-prob .body{display:flex;flex-direction:column;gap:16px;align-items:center}
+.b-prob .body p{font-size:clamp(16px,1.25vw,19px);line-height:1.45;color:var(--fg-2);max-width:40ch;letter-spacing:-.01em;margin-inline:auto}
+.b-prob .body .lead2{font-size:clamp(20px,1.8vw,27px);line-height:1.3;color:var(--fg);border-top:1px solid var(--rule);padding-top:20px;font-weight:500;letter-spacing:-.02em}
+.b-prob .body .lg{font-family:var(--serif);font-style:italic;font-weight:400;font-size:clamp(24px,2.2vw,34px);letter-spacing:-.01em}
+/* statement pages */
+.b-say .big{margin:0;font-size:clamp(44px,6.4vw,112px);line-height:.98;letter-spacing:-.035em;font-weight:500}
+.b-say .small{margin:28px auto 0;max-width:46ch;color:var(--fg-2);font-size:clamp(15px,1.2vw,18px);line-height:1.5}
+/* method steps */
+.steps{list-style:none;margin:0}
+.steps li{display:flex;flex-direction:column;gap:8px;border-top:1px solid var(--fg);padding-top:14px}
+.steps h3{font-size:clamp(22px,2vw,30px);letter-spacing:-.025em;line-height:1}
+.steps p{margin:0;color:var(--fg-2);font-size:15px;line-height:1.5}
+.steps .mono{color:var(--fg-2)}
+/* proof */
+.doc .proof{background:var(--ink);color:var(--paper);--fg:var(--paper);--fg-2:color-mix(in oklab,var(--paper) 68%,transparent);--rule:color-mix(in oklab,var(--paper) 18%,transparent)}
+.proof .pc{display:flex;flex-direction:column;align-items:center;text-align:center;gap:28px;padding-block:clamp(40px,6vw,80px)}
+.proof .pc h2{font-size:clamp(44px,6vw,104px);line-height:.96}
+.proof .answer{margin:0;font-family:var(--serif);font-style:italic;font-size:clamp(24px,2.6vw,40px);line-height:1.15;color:var(--paper)}
+.proof .note{margin:clamp(24px,4vw,56px) 0 0;font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--fg-2);display:flex;align-items:center;gap:12px}
+.proof .note span{font-family:var(--sans);font-size:22px;letter-spacing:0;color:var(--paper)}
+.proof h2{grid-column:1 / span 6;font-size:clamp(40px,5vw,88px);line-height:.98}
+.proof .plede{grid-column:8 / span 5;margin:0;color:var(--fg-2);font-size:17px;line-height:1.55}
+/* faq */
+.faq{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:24px}
+.faq h2{grid-column:1 / span 4;font-size:clamp(40px,5vw,88px);line-height:.98}
+.faq .qa{grid-column:6 / span 7;border-top:1px solid var(--ink)}
+.faq details{border-bottom:1px solid var(--rule)}
+.faq summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:20px;padding:22px 0;font-size:19px;font-weight:500;letter-spacing:-.015em}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary i{font-style:normal;font-weight:300;font-size:26px;line-height:1;transition:transform .4s var(--ease)}
+.faq details[open] summary i{transform:rotate(45deg)}
+.faq details p{margin:0 0 24px;max-width:58ch;color:var(--fg-2)}
+.doc .book{border-top:1px solid var(--rule)}
+
+
+/* statement pages that sit above their image */
+.b-say.top{align-items:flex-start;padding-top:calc(env(safe-area-inset-top,0px) + 110px)}
+/* products: the two cards sit in the empty centre, each beside its object */
+@media (min-width:901px){
+  .b-steps .path{position:absolute;left:50%;top:56%;translate:-50% -50%;display:grid;grid-template-columns:1fr 1fr;gap:clamp(16px,2vw,28px);width:min(40vw,600px)}
+  .b-steps .path .link{display:none}
+  .b-steps .path article{max-width:none;padding:18px 20px;gap:8px}
+  .b-steps .path article:first-child{text-align:right;align-items:flex-end}
+  .b-steps .path article:first-child .tl{align-self:flex-end}
+  .b-steps .path h3{font-size:clamp(22px,1.9vw,30px)}
+  .b-steps .path p{font-size:13px}
+}
+
+@media (min-width:901px){
+  /* problem: copy flanks the V so the falling spheres stay clear */
+  .b-prob .col{display:grid;grid-template-columns:1fr minmax(0,24vw) 1fr;max-width:none;width:100%;align-items:center;row-gap:22px;column-gap:0}
+  .b-prob h2{display:contents}
+  .b-prob h2 .rise:first-child{grid-column:1;grid-row:1;text-align:right}
+  .b-prob h2 .rise.it{grid-column:3;grid-row:1;text-align:left}
+  .b-prob .body{display:contents}
+  .b-prob .body .lead2{grid-column:1;grid-row:2;text-align:right;justify-self:end;max-width:22ch;border-top:0;padding-top:0}
+  .b-prob .body p:not(.lead2){grid-column:3;grid-row:2;text-align:left;justify-self:start;max-width:30ch;margin:0}
+  .b-say.top .big{font-size:clamp(38px,4.6vw,80px)}
+  .b-say.top .small{position:absolute;left:0;right:0;bottom:calc(env(safe-area-inset-bottom,0px) + 64px);margin:0 auto}
+  .b-say.top{padding-top:calc(env(safe-area-inset-top,0px) + 96px)}
+}
+
+/* hero: one centred block, two lines, on every screen */
+.b-hero .split{grid-template-columns:1fr;top:40%;text-align:center;justify-items:center}
+.b-hero .split>div:nth-child(2){display:none}
+.b-hero h1,.b-hero .right{text-align:center;white-space:nowrap}
+.b-hero h1{font-size:clamp(44px,7vw,124px);line-height:.95}
+.b-hero .right{font-size:clamp(46px,7.4vw,132px);line-height:.95}
+@media (max-width:900px){.beat.b-hero .split{top:22%;bottom:auto}.b-hero h1,.b-hero .right{white-space:normal;font-size:clamp(44px,12vw,72px)}}
+/* ---------- DOCUMENT (after the flight) ---------- */
+.doc{position:relative;z-index:2;background:var(--paper);color:var(--ink);--fg:var(--ink);--fg-2:color-mix(in oklab,var(--ink) 66%,transparent);--fg-3:color-mix(in oklab,var(--ink) 45%,transparent);--rule:color-mix(in oklab,var(--ink) 16%,transparent)}
+.doc section{padding-block:clamp(88px,12vw,160px);padding-inline:var(--gut)}
+.book{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:24px;row-gap:48px}
+.book .l{grid-column:1 / span 6}
+.book .r{grid-column:7 / span 6}
+.book .eyebrow{color:var(--fg-2);margin-bottom:22px}
+.book h2{font-size:clamp(40px,4.6vw,80px);line-height:.98}
+.book .lead{margin:28px 0 0;font-size:clamp(20px,1.8vw,26px);line-height:1.3;letter-spacing:-.02em;font-weight:500}
+.book .muted{margin:28px 0 0;font-size:18px;color:var(--fg-2);max-width:44ch}
+.book .mail{display:inline-block;margin-top:28px}
+.ask{display:flex;flex-direction:column;border-top:1px solid var(--ink)}
+.ask .pair{display:grid;grid-template-columns:1fr 1fr;column-gap:24px}
+.ask label,.ask fieldset{display:flex;flex-direction:column;gap:8px;padding:18px 0;border:0;border-bottom:1px solid var(--rule);margin:0}
+.ask label:focus-within{border-bottom-color:var(--ink)}
+.ask .lbl,.ask legend{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--fg-2);padding:0}
+.ask legend{margin-bottom:12px;float:left;width:100%}
+.ask input,.ask textarea{font:inherit;font-size:18px;color:var(--ink);background:transparent;border:0;outline:0;padding:0;resize:vertical;width:100%}
+.ask input::placeholder,.ask textarea::placeholder{color:color-mix(in oklab,var(--ink) 32%,transparent)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;clear:both}
+.chips label{padding:0;border:0;flex-direction:row}
+.chips input{position:absolute;opacity:0;width:1px;height:1px}
+.chips span{display:inline-flex;align-items:center;height:38px;padding:0 16px;border-radius:999px;border:1px solid color-mix(in oklab,var(--ink) 28%,transparent);font-size:14px;font-weight:500;cursor:pointer;transition:background .25s var(--ease),color .25s var(--ease),border-color .25s var(--ease)}
+.chips input:checked+span{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.chips input:focus-visible+span{outline:2px solid var(--ink);outline-offset:2px}
+.ask .pill.solid,.result .pill.solid{margin-top:28px;align-self:flex-start;background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.ask .pill.solid:hover,.result .pill.solid:hover{background:transparent;color:var(--ink)}
+.note{margin:16px 0 0;color:var(--fg-2);font-size:13px}
+.result{display:flex;flex-direction:column;align-items:flex-start;border-top:1px solid var(--ink);padding-top:22px}
+.result h3{font-size:clamp(36px,4vw,60px);line-height:.98;margin-top:14px;outline:0}
+.result>p{margin:18px 0 0;color:var(--fg-2)}
+.result textarea{width:100%;margin-top:24px;font:13px/1.6 var(--mono);color:var(--ink);background:color-mix(in oklab,var(--ink) 5%,transparent);border:1px solid var(--rule);padding:16px;resize:vertical}
+.result .acts{display:flex;gap:18px;align-items:center;margin-top:18px;flex-wrap:wrap}
+.result .acts .pill{color:var(--ink)}
+.result .acts .pill:hover{background:var(--ink);color:var(--paper)}
+[hidden]{display:none!important}
+
+footer.foot{background:var(--ink);color:color-mix(in oklab,var(--paper) 60%,transparent);padding:56px var(--gut) calc(env(safe-area-inset-bottom,0px) + 36px)}
+.foot .ft{display:grid;grid-template-columns:auto 1fr auto;gap:32px;align-items:center;padding-bottom:48px;border-bottom:1px solid color-mix(in oklab,var(--paper) 16%,transparent)}
+.foot .ft .mark{color:var(--paper);align-self:center;gap:16px;font-size:20px;margin-right:clamp(24px,4vw,64px)}
+.foot .ft .mark svg{width:56px}
+.foot .ft p{margin:0;color:var(--paper);font-family:var(--serif);font-style:italic;font-size:clamp(24px,2.4vw,36px);line-height:1.1}
+.foot .ft .links{display:flex;flex-direction:column;gap:12px;align-items:flex-start;color:var(--paper)}
+.foot .fb{display:flex;justify-content:space-between;gap:24px;padding-top:22px;flex-wrap:wrap}
+.foot .fb a{text-decoration:none;color:var(--paper)}
+
+/* ---------- SMALL SCREENS ---------- */
+@media (max-width:900px){
+  .rail span{display:none!important}.credit{display:none}
+  .hud .tc span:nth-child(3){display:none}
+  .bar .pill{height:40px;padding:0 16px;font-size:13px}
+  .b-hero .kicker{top:calc(env(safe-area-inset-top,0px) + 82px);font-size:10px;letter-spacing:.12em}
+  .b-hero .split{grid-template-columns:1fr;top:auto;bottom:calc(env(safe-area-inset-bottom,0px) + 260px);transform:none}
+  .b-hero .split>div:nth-child(2){display:none}
+  .b-hero h1,.b-hero .right{text-align:center;white-space:normal;font-size:clamp(44px,12vw,72px)}
+  .b-hero .cfoot{align-items:center;text-align:center;bottom:calc(env(safe-area-inset-bottom,0px) + 30px)}
+  .b-hero .sub{font-size:15px}
+  .ctas{justify-content:center}
+  .ctas .pill{height:40px;padding:0 16px;font-size:13px}
+  .bf{padding-top:calc(env(safe-area-inset-top,0px) + 78px);padding-bottom:calc(env(safe-area-inset-bottom,0px) + 60px)}
+  .sec h2,.b-prob h2,.b-lab h2,.b-belief h2{font-size:clamp(30px,8.6vw,48px)}
+  .lg,.b-belief .band .lg{font-size:16px}
+  .body p,.b-belief .band p,.b-lab .foot2 .panel p{font-size:13px;line-height:1.46}
+  .b-prob{justify-content:flex-end}
+  .b-prob .col{max-width:none;gap:14px}
+  .b-prob .eyebrow .aside{display:none}
+  .b-prob .body{background:var(--panel);padding:16px 18px;display:flex;flex-direction:column;gap:12px}
+  .b-belief .head{top:calc(env(safe-area-inset-top,0px) + 78px)}
+  .b-belief .band{grid-template-columns:1fr;gap:10px;padding:16px 18px;bottom:calc(env(safe-area-inset-bottom,0px) + 60px)}
+  .b-belief .band .tl{margin-top:2px}
+  .b-future .cover .cap{display:none}
+  .b-future .head{top:calc(env(safe-area-inset-top,0px) + 78px)}
+  .b-future .stack{display:grid;position:absolute;left:var(--gut);right:var(--gut);bottom:calc(env(safe-area-inset-bottom,0px) + 60px);gap:0;padding:6px 18px}
+  .b-future .stack div{display:grid;grid-template-columns:auto 1fr;gap:2px 14px;padding:12px 0;border-top:1px solid var(--rule);font-size:13px}
+  .b-future .stack div:first-child{border-top:0}
+  .b-future .stack strong{font-weight:500;font-size:16px;letter-spacing:-.015em;line-height:1.2}
+  .b-future .stack p{margin:0;grid-column:2;color:var(--fg-2);line-height:1.45}
+  .b-future .stack .mono{color:var(--fg-2);padding-top:3px}
+  .b-steps{justify-content:flex-end;gap:12px}
+  .b-steps .l{gap:10px}
+  .b-steps h2{white-space:normal}
+  .b-steps .intro-p{font-size:13.5px}
+  .path{grid-template-columns:1fr}
+  .path article{max-width:none}
+  .link{flex-direction:row;padding:6px 0;gap:10px}
+  .link .rt{display:none}.link .dn{display:inline}
+  .path article{padding:14px 16px;gap:6px}
+  .path h3{font-size:22px}
+  .path p{font-size:13px;line-height:1.45}
+  .link{padding:6px 0}.link b{font-size:16px}
+  .book .l,.book .r{grid-column:1 / -1}
+  .faq h2,.faq .qa{grid-column:1 / -1}
+  .proof .note{flex-direction:column;gap:8px;text-align:center}
+  .b-prob .body .lg{font-size:22px}
+  .b-say .big{font-size:clamp(40px,11vw,60px)}
+  .b-say .small{font-size:14px}
+  .steps li{padding-top:10px;gap:4px}
+  .steps h3{font-size:20px}
+  .steps p{font-size:13px}
+  .proof .plede{margin-top:18px;font-size:15px}
+  .faq .qa{margin-top:28px}
+  .faq summary{font-size:17px}
+
+  .ask .pair{grid-template-columns:1fr}
+  .foot .ft{grid-template-columns:1fr;gap:24px}
+}
+@media (max-width:900px) and (max-height:740px){
+  .body p,.b-belief .band p,.b-lab .foot2 .panel p,.path p{font-size:12px}
+  .sec h2,.b-prob h2,.b-lab h2,.b-belief h2{font-size:30px}
+}
+@media (prefers-reduced-motion:reduce){
+  .intro{display:none}
+  .grain{animation:none}
+  .cover video{display:none}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#book">Skip to the enquiry</a>
+<div class="intro" id="intro" aria-hidden="true"><div class="in">
+  <svg viewBox="0 0 100 96"><rect width="16" height="40"/><polygon points="24,0 42,0 62,28 82,0 100,0 72,40 52,40"/><polygon points="0,96 19,96 36,70 53,96 72,96 46,56 26,56"/><rect x="84" y="56" width="16" height="40"/></svg>
+  <div class="ln"><i></i></div>
+  <div class="mono ct" id="introCt">Frame 000 / 960</div>
+</div></div>
+
+<div class="world" id="top">
+  <div class="stage" id="stage">
+    <div class="cover" id="cover" aria-hidden="true"><img id="poster" alt=""><img id="posterB" class="pb" alt=""></div>
+    <div class="scrim" id="scrim"></div>
+    <div class="grain" aria-hidden="true"></div>
+
+    <div class="copy" id="copy">
+      <!-- 00 Hero -->
+      <section class="beat b-hero on" data-beat="0" aria-label="Sabotaging the way we work. Time for a reset." style="opacity:1">
+        <p class="mono kicker eyebrow">The creative intelligence lab of Interesting Times</p>
+        <div class="split">
+          <h1><span class="rise"><span>Sabotaging</span></span></h1>
+          <div></div>
+          <div class="right it"><span class="rise"><span>the way we work.</span></span></div>
+        </div>
+        <div class="cfoot">
+          <p class="sub fade">Time for a reset.</p>
+          <div class="ctas fade">
+            <a class="pill solid" href="#book">Bring us a challenge ↗</a>
+            <button class="pill" type="button" data-goto="1">Scroll ↓</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- 01 Problem -->
+      <section class="beat b-prob bf" data-beat="1" aria-label="The problem">
+        <div class="col">
+          <h2><span class="rise"><span>It works.</span></span><span class="rise it"><span>That’s the problem.</span></span></h2>
+          <div class="body">
+            <p class="lead2 fade">The tools got ahead. We became the bottleneck.</p>
+            <p class="fade">Too much human attention goes into bridging the tools, the knowledge and the way the business works.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 02 Provocation -->
+      <section class="beat b-say top" data-beat="2" aria-label="If it ain’t broke">
+        <div>
+          <p class="big"><span class="rise"><span>If it ain’t broke.</span></span><span class="rise it"><span>Break it.</span></span></p>
+        </div>
+      </section>
+
+      <!-- 03 Method -->
+      <section class="beat b-belief" data-beat="3" aria-label="The method">
+        <div class="head">
+          <h2><span class="rise"><span>Destruction is</span></span><span class="rise it"><span>a form of intelligence.</span></span></h2>
+        </div>
+        <ol class="band panel steps">
+          <li class="fade"><span class="mono">01</span><h3>Take apart</h3><p>One real problem. Every lazy decision behind it, exposed.</p></li>
+          <li class="fade"><span class="mono">02</span><h3>Prototype</h3><p>A working answer before the meeting about it.</p></li>
+          <li class="fade"><span class="mono">03</span><h3>Codify</h3><p>What worked becomes skills and memory.</p></li>
+        </ol>
+      </section>
+
+      <!-- 04 Outcomes -->
+      <section class="beat b-future sec" data-beat="4" aria-label="What this makes possible">
+        <div class="head">
+          <h2><span class="rise"><span>What this</span></span><span class="rise it"><span>makes possible.</span></span></h2>
+        </div>
+        <div class="cover">
+          <div class="cap fade"><span class="mono">01 / More agency</span><h3>A person with<br>the reach of a team.</h3><p>More of the distance between an idea and something real becomes theirs to explore.</p></div>
+          <div class="cap fade"><span class="mono">02 / More intelligence in use</span><h3>A business able to use<br>what it already knows.</h3><p>Its experience becomes a starting point for the next piece of work.</p></div>
+          <div class="cap fade"><span class="mono">03 / More human attention</span><h3>For judgment, taste<br>and direction.</h3><p>The insight, the taste and the unexpected direction that make the work matter.</p></div>
+        </div>
+        <div class="stack panel fade">
+          <div><span class="mono">01</span><strong>A person with the reach of a team.</strong><p>More of the distance between an idea and something real becomes theirs to explore.</p></div>
+          <div><span class="mono">02</span><strong>A business able to use what it already knows.</strong><p>Its experience becomes a starting point for the next piece of work.</p></div>
+          <div><span class="mono">03</span><strong>More human attention for judgment, taste and direction.</strong><p>The insight, the taste and the unexpected direction that make the work matter.</p></div>
+        </div>
+      </section>
+
+      <!-- 05 Bridge -->
+      <section class="beat b-say top" data-beat="5" aria-label="The new architecture of how work works">
+        <div>
+          <p class="big"><span class="rise"><span>The new architecture</span></span><span class="rise it"><span>of how work works.</span></span></p>
+          <p class="small fade">Two layers, built for ourselves first. One remembers. One makes.</p>
+        </div>
+      </section>
+
+      <!-- 06 Products -->
+      <section class="beat b-steps sec bf" data-beat="6" aria-label="Two layers, one lab">
+        <div class="l">
+          <p class="mono eyebrow fade">Two layers · One lab</p>
+          <h2><span class="rise"><span>OS17 remembers.</span></span><span class="rise it"><span>Sabatage Studio makes.</span></span></h2>
+        </div>
+        <div class="path">
+          <article class="panel fade"><span class="mono">The operating layer</span><h3>OS17</h3><p>Brings your team’s brand context, memory and workflows into the tools it already uses.</p><a class="tl" href="https://os17site.netlify.app/" target="_blank" rel="noopener"><span>Explore OS17</span><span aria-hidden="true">↗</span></a></article>
+          <div class="link mono fade"><b class="rt" aria-hidden="true">→</b><b class="dn" aria-hidden="true">↓</b><span>Built on that foundation</span></div>
+          <article class="panel fade"><span class="mono">The making layer</span><h3>Sabatage Studio</h3><p>Uses that context to produce film, content and campaigns, on brief and on brand.</p><a class="tl" href="https://__SABATAGE_DOMAIN__/" target="_blank" rel="noopener"><span>Explore Sabatage Studio</span><span aria-hidden="true">↗</span></a></article>
+        </div>
+      </section>
+    </div>
+
+    <div class="chrome">
+      <div class="bar">
+        <a class="mark" href="#top" aria-label="17 AI, back to top"><svg viewBox="0 0 100 96" aria-hidden="true"><rect width="16" height="40"/><polygon points="24,0 42,0 62,28 82,0 100,0 72,40 52,40"/><polygon points="0,96 19,96 36,70 53,96 72,96 46,56 26,56"/><rect x="84" y="56" width="16" height="40"/></svg></a>
+        <a class="pill" href="#book">Bring us a challenge ↗</a>
+      </div>
+      <div class="hud">
+        <nav class="rail" id="rail" aria-label="Chapters" hidden></nav>
+      </div>
+      <div class="meter" aria-hidden="true"><i id="meter"></i></div>
+    </div>
+  </div>
+  <div id="track" aria-hidden="true"></div>
+</div>
+
+<main class="doc" id="main">
+  <section class="proof">
+    <div class="pc">
+      <h2>You don’t need <em>another platform.</em></h2>
+      <p class="answer">You need to reset the way work works.</p>
+      <p class="note"><span lang="ar">١٧</span> Say 17 in Arabic. It sounds like sabotage.</p>
+    </div>
+  </section>
+
+  <section class="faq">
+    <h2>Short <em>answers.</em></h2>
+    <div class="qa">
+      <details open><summary>Is this a consultancy?<i aria-hidden="true">+</i></summary><p>No. Consultants leave you a deck. We leave you a system that works, and stay to keep it working.</p></details>
+      <details><summary>Which AI do you use?<i aria-hidden="true">+</i></summary><p>Whichever you use. We don’t sell models. Your skills and memory move with you if you switch.</p></details>
+      <details><summary>Does my team need to be technical?<i aria-hidden="true">+</i></summary><p>No. We train them. If they can write a brief, they can run it.</p></details>
+      <details><summary>Where does our data live?<i aria-hidden="true">+</i></summary><p>In your cloud. Notion, Google Drive or local. Never ours.</p></details>
+      <details><summary>What if we leave?<i aria-hidden="true">+</i></summary><p>You keep the memory. Your brand walks out better documented than it walked in.</p></details>
+    </div>
+  </section>
+
+  <section class="book" id="book">
+    <div class="l">
+      <h2>Bring us <em>a challenge.</em></h2>
+      <p class="muted">Thirty minutes. One real problem. We take it apart with you, then show you what we’d build instead.</p>
+      <a class="tl mail" href="mailto:hello@17ai.io"><span>hello@17ai.io</span><span aria-hidden="true">↗</span></a>
+    </div>
+    <div class="r">
+      <form class="ask" id="ask">
+        <div class="pair">
+          <label><span class="lbl">Your name</span><input name="name" autocomplete="name" required placeholder="Name" maxlength="120"></label>
+          <label><span class="lbl">Work email</span><input name="email" type="email" autocomplete="email" required placeholder="you@company.com" maxlength="200"></label>
+        </div>
+        <label><span class="lbl">Company or team (optional)</span><input name="company" autocomplete="organization" placeholder="Where you work" maxlength="180"></label>
+        <fieldset><legend>Where would you like to begin?</legend>
+          <div class="chips">
+            <label><input type="radio" name="interest" value="os17"><span>OS17</span></label>
+            <label><input type="radio" name="interest" value="studio"><span>Sabatage Studio</span></label>
+            <label><input type="radio" name="interest" value="possibility"><span>A new possibility</span></label>
+            <label><input type="radio" name="interest" value="explore" checked><span>Let’s explore</span></label>
+          </div>
+        </fieldset>
+        <label><span class="lbl">What’s the challenge?</span><textarea name="challenge" rows="4" required placeholder="One real problem. The situation, and what it costs you today." maxlength="6000"></textarea></label>
+        <button class="pill solid" type="submit">Prepare an enquiry ↗</button>
+        <p class="note">This prepares an email draft for you to review and send. No information is submitted through this page.</p>
+      </form>
+      <div class="result" id="result" hidden>
+        <p class="mono eyebrow">Your enquiry is ready</p>
+        <h3 tabindex="-1">Start the<br><em>conversation.</em></h3>
+        <p>Open the draft in your email app, or copy it and send it to <strong>hello@17ai.io</strong>.</p>
+        <a id="openEmail" class="pill solid" href="mailto:hello@17ai.io">Open email draft ↗</a>
+        <textarea id="preview" rows="10" aria-label="Prepared enquiry" readonly></textarea>
+        <div class="acts"><button class="pill" id="copyEnq" type="button">Copy enquiry</button><button class="tl" id="editEnq" type="button">Edit details</button></div>
+        <p class="note" role="status" id="status">Nothing has been sent.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="ft">
+    <a class="mark" href="#top" aria-label="17 AI home"><svg viewBox="0 0 100 96" aria-hidden="true"><rect width="16" height="40"/><polygon points="24,0 42,0 62,28 82,0 100,0 72,40 52,40"/><polygon points="0,96 19,96 36,70 53,96 72,96 46,56 26,56"/><rect x="84" y="56" width="16" height="40"/></svg><span>17 AI</span></a>
+    <p>The creative intelligence lab<br>of Interesting Times.</p>
+    <div class="links"><a class="tl" href="#book"><span>Bring us a challenge</span><span aria-hidden="true">↗</span></a><a class="tl" href="mailto:hello@17ai.io"><span>hello@17ai.io</span><span aria-hidden="true">↗</span></a></div>
+  </div>
+  <div class="fb mono"><span>Time for a reset.</span><span>17 AI · Built by Interesting Times</span><a href="#top">Back to top ↑</a></div>
+</footer>
+
+<script>
+const POSTERS = ['assets/img/still-0.jpg','assets/img/still-1.jpg','assets/img/still-2.jpg','assets/img/still-3.jpg','assets/img/still-4.jpg','assets/img/still-5.jpg','assets/img/still-6.jpg'];
+const LEG_SRC = ['assets/video/leg1.mp4','assets/video/leg2.mp4','assets/video/leg3.mp4','assets/video/leg4.mp4','assets/video/leg5.mp4','assets/video/leg6.mp4'];
+(() => {
+  // ---- The flight: 6 holds (the stills) joined by 5 legs (the chained clips). ----
+  const N = 7;                                   // pages (beats)
+  const ST = [0, 1, 2, 3, 4, 5, 6];              // which still each page sits on
+  const TONE = ['dark','dark','dark','dark','dark','dark','dark'];
+  const NAMES = ['Sabotage','The problem','Break it','The method','What this makes possible','The architecture','Two layers'];
+  const D = 'rgba(5,5,7,', L = 'rgba(241,238,230,';
+  const SAY = `radial-gradient(ellipse 70% 60% at 50% 50%, ${D}.9), ${D}.82) 60%, ${D}.75))`;
+  const SCRIM_D = [
+    `linear-gradient(180deg, ${D}.55), ${D}0) 30%, ${D}.1) 60%, ${D}.88) 90%)`,
+    `radial-gradient(ellipse 46% 36% at 50% 42%, ${D}.72), ${D}.25) 70%, ${D}0)), linear-gradient(180deg, ${D}.4), ${D}0) 30%, ${D}0) 75%, ${D}.6))`,
+    `linear-gradient(180deg, ${D}.78), ${D}.3) 42%, ${D}0) 62%)`,
+    `linear-gradient(180deg, ${D}.75), ${D}0) 30%, ${D}0) 64%, ${D}.88))`,
+    `linear-gradient(180deg, ${D}.7), ${D}0) 30%, ${D}0) 58%, ${D}.65))`,
+    `linear-gradient(180deg, ${D}.82), ${D}.35) 40%, ${D}0) 58%)`,
+    `linear-gradient(180deg, ${D}.72), ${D}0) 32%, ${D}0) 80%, ${D}.5))`
+  ];
+  const SCRIM_M = TONE.map((tn, i) => tn === 'light'
+    ? `linear-gradient(180deg, ${L}.85), ${L}.3) 26%, ${L}0) 40%, ${L}.6) 58%, ${L}.95) 78%)`
+    : (i === 2 || i === 5) ? SAY
+    : `linear-gradient(180deg, ${D}.7), ${D}0) 20%, ${D}.45) 42%, ${D}.9) 60%, ${D}.96))`);
+  const FOCAL = [.42, .5, .5, .5, .5, .5, .5];   // per still: where the subject sits across the frame, for narrow screens
+  const mob = matchMedia('(max-width: 900px)');
+  const HOLD = [1.0, 1.4, 1.15, 1.4, 1.4, 1.15, 1.5];   // viewport heights of dwell per page
+  const GAP = .8;                                    // between two pages on the same still
+  const HAS = [1, 1, 1, 1, 1, 1];                       // which legs have footage; the rest crossfade stills
+  const LEGS = HAS.map(h => h ? 2.2 : 1.3);          // viewport heights per leg
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const stage = document.getElementById('stage'), cover = document.getElementById('cover');
+  const poster = document.getElementById('poster'), posterB = document.getElementById('posterB'), scrim = document.getElementById('scrim');
+  const track = document.getElementById('track'), rail = document.getElementById('rail');
+  const beats = [...document.querySelectorAll('.beat')];
+  beats.forEach(b => {
+    b.querySelectorAll('.rise').forEach((r, j) => r.style.setProperty('--d', j));
+    b.querySelectorAll('.fade').forEach((r, j) => r.style.setProperty('--d', j));
+  });
+  poster.src = POSTERS[0]; poster.dataset.i = '0';
+
+
+  const intro = document.getElementById('intro'), introCt = document.getElementById('introCt');
+  let introP = 0; const introShown = performance.now();
+  const setIntro = p => { introP = Math.max(introP, p); intro.style.setProperty('--p', introP.toFixed(3)); introCt.textContent = 'Frame ' + String(Math.round(introP*960)).padStart(3,'0') + ' / 960'; };
+  const endIntro = () => { if (intro.classList.contains('done')) return; setIntro(1); setTimeout(() => intro.classList.add('done'), Math.max(0, 900 - (performance.now() - introShown))); };
+  setTimeout(endIntro, 3200);   // never hold the page hostage
+  if (reduce) intro.classList.add('done');
+  // the counter runs while the first leg decodes
+  (function warm(){ if (intro.classList.contains('done')) return; setIntro(Math.min(.9, introP + .035)); setTimeout(warm, 60); })();
+
+  const meter = document.getElementById('meter');
+
+  // timeline in viewport-height units: holds joined by legs (new still) or gaps (same still)
+  const segs = []; let u = 0;
+  for (let i = 0; i < N; i++) {
+    segs.push({type:'hold', i, still:ST[i], a:u, b:u + HOLD[i]}); u += HOLD[i];
+    if (i < N-1) {
+      if (ST[i+1] !== ST[i]) { const L = LEGS[ST[i]]; segs.push({type:'leg', i, leg:ST[i], a:u, b:u + L}); u += L; }
+      else { segs.push({type:'gap', i, still:ST[i], a:u, b:u + GAP}); u += GAP; }
+    }
+  }
+  const TOTAL = u;
+  const holdSeg = i => segs.find(s => s.type==='hold' && s.i===i);
+  const holdMid = i => { const s = holdSeg(i); return (s.a + s.b) / 2; };
+
+  function layout(){ track.style.height = (TOTAL * innerHeight) + 'px'; }
+  let lastW = innerWidth;
+  addEventListener('resize', () => { if (matchMedia('(pointer: coarse)').matches && innerWidth === lastW) return; lastW = innerWidth; layout(); });
+  layout();
+
+  // rail
+  NAMES.forEach((n, i) => {
+    const b = document.createElement('button');
+    b.type = 'button'; b.innerHTML = `<span class="mono">${String(i).padStart(2,'0')} ${n}</span><i></i>`;
+    b.setAttribute('aria-label', n);
+    b.addEventListener('click', () => goTo(i));
+    rail.appendChild(b);
+  });
+  function goTo(i){
+    const top = stage.parentElement.offsetTop + (i === 0 ? 0 : holdMid(i)) * innerHeight;
+    scrollTo({top, behavior: reduce ? 'auto' : 'smooth'});
+  }
+  document.querySelectorAll('[data-goto]').forEach(el => el.addEventListener('click', () => goTo(+el.dataset.goto)));
+
+  // videos: one short clip per leg, loaded on demand
+  const NL = POSTERS.length - 1;
+  const vids = HAS.map(() => {
+    const v = document.createElement('video');
+    v.muted = true; v.playsInline = true; v.preload = 'auto';
+    v.setAttribute('muted',''); v.setAttribute('playsinline','');
+    v.dataset.ready = '0';
+    cover.appendChild(v);
+    return v;
+  });
+  const load = i => {
+    if (reduce || !vids[i] || !HAS[i] || vids[i].dataset.loading) return;
+    vids[i].dataset.loading = '1';
+    // fetched whole into a blob so every frame is seekable while scrubbing
+    fetch(LEG_SRC[i]).then(r => { if (!r.ok) throw new Error(r.status); return r.blob(); }).then(b => {
+      vids[i].addEventListener('loadeddata', () => { vids[i].dataset.ready = '1'; frame(); if (i === 0) endIntro(); }, {once:true});
+      vids[i].addEventListener('error', () => { if (i === 0) endIntro(); }, {once:true});
+      vids[i].src = URL.createObjectURL(b);
+    }).catch(() => { if (i === 0) endIntro(); });
+  };
+  load(0); load(1);
+  // prime on first touch (iOS paints seeked frames only after a play)
+  addEventListener('touchstart', () => vids.forEach(v => { if (v.src) v.play().then(() => v.pause()).catch(()=>{}); }), {once:true, passive:true});
+
+  let smooth = 0, target = 0;
+  const clamp = (x,a,b) => Math.min(b, Math.max(a, x));
+  const ease = t => t<.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2,3)/2;
+
+  function seek(v, t){
+    if (v.dataset.ready !== '1' || !v.duration) return;
+    t = clamp(t, 0, v.duration - 0.04);
+    if (Math.abs(v.currentTime - t) < 0.012 || v.seeking) return;   // coalesce seeks
+    v.currentTime = t;
+  }
+
+  function frame(){
+    const y = smooth;
+    const seg = segs.find(s => y >= s.a && y < s.b) || segs[segs.length-1];
+    let scene = 0, best = 1e9;
+    for (let i = 0; i < N; i++){ const d = Math.abs(y - holdMid(i)); if (d < best){ best = d; scene = i; } }
+
+    // footage
+    let showLeg = -1, t = 0, fadeNext = 0;
+    if (seg.type === 'leg'){
+      const p = clamp((y - seg.a) / (seg.b - seg.a), 0, 1);
+      showLeg = seg.leg; const v = vids[seg.leg];
+      t = ease(p) * (v.duration || 8);
+      if (p > .9) fadeNext = (p - .9) / .1;   // seam insurance: blend into the next leg's first frame
+      load(seg.leg); load(seg.leg+1); if (seg.leg+2 < NL) load(seg.leg+2);
+    } else {
+      const s = seg.still;
+      if (s < NL){ showLeg = s; t = 0; } else { showLeg = NL-1; t = 99; }
+      load(Math.min(s,NL-1)); if (s < NL-1) load(s+1);
+    }
+    // stills underneath: during a leg the two ends crossfade, so the page reads even if video can't play
+    const aI = seg.type==='leg' ? seg.leg : seg.still, bI = seg.type==='leg' ? seg.leg+1 : seg.still;
+    if (poster.dataset.i !== String(aI)) { poster.src = POSTERS[aI]; poster.dataset.i = aI; }
+    if (posterB.dataset.i !== String(bI)) { posterB.src = POSTERS[bI]; posterB.dataset.i = bI; }
+    posterB.style.opacity = seg.type==='leg' ? ease(clamp((y - seg.a) / (seg.b - seg.a), 0, 1)).toFixed(3) : 0;
+    vids.forEach((v, i) => {
+      let o = 0;
+      if (i === showLeg) o = 1;
+      if (seg.type==='leg' && i === seg.leg + 1 && fadeNext > 0) { o = fadeNext; seek(v, 0); }
+      if (v.dataset.ready !== '1') o = 0;
+      v.style.opacity = o;
+      if (i === showLeg) seek(v, t);
+    });
+
+    // copy: each beat breathes around its hold
+    beats.forEach((b, i) => {
+      const s = holdSeg(i);
+      const fin = i===0 ? 1 : clamp((y - (s.a - .6)) / .6, 0, 1);
+      const fout = clamp(((s.b + .45) - y) / .55, 0, 1);
+      const o = i===N-1 ? fin : Math.min(fin, fout);
+      b.style.opacity = o.toFixed(3);
+      b.classList.toggle('on', o > .01);
+      b.style.setProperty('--in', ease(o).toFixed(3));
+    });
+    let tone = TONE[scene];
+    if (seg.type === 'leg') tone = (y - seg.a) / (seg.b - seg.a) < .5 ? TONE[seg.i] : TONE[seg.i+1];
+    const still = seg.type === 'leg' ? seg.leg : seg.still;
+    if (stage.dataset.tone !== tone) stage.dataset.tone = tone;
+    scrim.style.background = (mob.matches ? SCRIM_M : SCRIM_D)[scene];
+    // narrow screens: slide the frame so the subject stays in view (still and video move together)
+    let fx = FOCAL[still];
+    if (seg.type === 'leg') { const q = ease(clamp((y - seg.a) / (seg.b - seg.a), 0, 1)); fx = FOCAL[seg.leg] + (FOCAL[seg.leg+1] - FOCAL[seg.leg]) * q; }
+    const cw = cover.offsetWidth, slack = Math.max(0, (cw - innerWidth) / 2);
+    const dx = clamp((.5 - fx) * cw, -slack, slack);
+    cover.style.transform = `translate(calc(-50% + ${dx.toFixed(1)}px), -50%)`;
+    scrim.style.opacity = clamp(1 - best / .9, 0, 1).toFixed(3);
+
+    // HUD
+    [...rail.children].forEach((b, i) => b.setAttribute('aria-current', i === scene ? 'true' : 'false'));
+    meter.style.width = (clamp(y / TOTAL, 0, 1) * 100).toFixed(2) + '%';
+  }
+
+  function tick(){
+    const top = stage.parentElement.offsetTop;
+    target = clamp((scrollY - top) / innerHeight, 0, TOTAL);
+    const k = reduce ? 1 : 0.075;
+    const prev = smooth;
+    smooth += (target - smooth) * k;
+    if (Math.abs(target - smooth) < 0.0005) smooth = target;
+    if (smooth !== prev) frame();
+    requestAnimationFrame(tick);
+  }
+  frame();
+  requestAnimationFrame(tick);
+})();
+
+// Enquiry: prepares an email draft. Nothing is submitted from the page.
+(() => {
+  const form = document.getElementById('ask'), result = document.getElementById('result'), preview = document.getElementById('preview'), status = document.getElementById('status');
+  const names = {os17:'OS17', studio:'Sabatage Studio', possibility:'A new possibility', explore:'Let’s explore'};
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    if (!form.reportValidity()) return;
+    const d = new FormData(form);
+    const name = String(d.get('name')).trim(), company = String(d.get('company')).trim();
+    const interest = names[d.get('interest')] || names.explore;
+    const body = `Hi 17 AI,\n\n${String(d.get('challenge')).trim()}\n\nI’m interested in: ${interest}\n\nName: ${name}\nEmail: ${String(d.get('email')).trim()}${company ? '\nCompany/team: ' + company : ''}`;
+    const subject = `A challenge for the lab: ${interest}`;
+    preview.value = `To: hello@17ai.io\nSubject: ${subject}\n\n${body}`;
+    document.getElementById('openEmail').href = `mailto:hello@17ai.io?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    status.textContent = 'Nothing has been sent.';
+    form.hidden = true; result.hidden = false;
+    result.querySelector('h3').focus();
+  });
+  document.getElementById('editEnq').addEventListener('click', () => { result.hidden = true; form.hidden = false; form.elements.challenge.focus(); });
+  document.getElementById('copyEnq').addEventListener('click', async () => {
+    try { await navigator.clipboard.writeText(preview.value); status.textContent = 'Enquiry copied. Paste it into your email to hello@17ai.io.'; }
+    catch { preview.focus(); preview.select(); status.textContent = 'The enquiry is selected. Copy it and paste it into your email.'; }
+  });
+})();
+</script>
+</body>
+</html>
